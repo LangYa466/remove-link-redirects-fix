@@ -147,20 +147,18 @@
         name: "QQ",
         urlTest: /c\.pc\.qq\.com.*pfurl=(.*)/,
         resolveAutoJump: function () {
-          location.href = decodeURIComponent(
-            new URL(location.href).searchParams.get("pfurl")
-          );
+          const pfurl = new URL(location.href).searchParams.get("pfurl");
+          if (pfurl) location.href = decodeURI(pfurl);
         },
       },
       {
         name: "QQ",
         urlTest: /c\.pc\.qq\.com.*url=(.*)/,
         resolveAutoJump: function () {
-          location.href = decodeURIComponent(
-            new URL(location.href).searchParams.get("url")
-          );
+          const url = new URL(location.href).searchParams.get("url");
+          if (url) location.href = decodeURI(url);
         },
-      },
+      },     
       {
         name: "UrlShare",
         urlTest: /.+\.urlshare\..+\/.*url=(.*)/,
