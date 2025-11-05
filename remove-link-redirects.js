@@ -1,14 +1,15 @@
 // ==UserScript==
-// @name              去除链接重定向 修复版
-// @author            Meriel, LangYa466
-// @description       修复版 原作者不更新!!! 能原地解析的链接绝不在后台访问，去除重定向的过程快速且高效，平均时间在0.02ms~0.05ms之间。几乎没有任何在后台访问网页获取去重链接的操作，一切都在原地进行，对速度精益求精。去除网页内链接的重定向，具有高准确性和高稳定性，以及相比同类插件更低的时间占用。并且保证去除重定向的有效性，采用三级方案，原地解析->自动跳转->后台访问，保证了一定能去除重定向链接
-// @version           2.9.0
+// @name              去除链接重定向
+// @author            Meriel
+// @description       能原地解析的链接绝不在后台访问，去除重定向的过程快速且高效，平均时间在0.02ms~0.05ms之间。几乎没有任何在后台访问网页获取去重链接的操作，一切都在原地进行，对速度精益求精。去除网页内链接的重定向，具有高准确性和高稳定性，以及相比同类插件更低的时间占用。并且保证去除重定向的有效性，采用三级方案，原地解析->自动跳转->后台访问，保证了一定能去除重定向链接
+// @version           2.8.0
 // @namespace         Violentmonkey Scripts
 // @grant             GM.xmlHttpRequest
 // @match             *://*/*
 // @connect           *
 // @icon              https://cdn-icons-png.flaticon.com/512/208/208895.png
 // @supportURL        https://github.com/MerielVaren/remove-link-redirects
+// @homepage          https://greasyfork.org/zh-CN/scripts/483475-%E5%8E%BB%E9%99%A4%E9%93%BE%E6%8E%A5%E9%87%8D%E5%AE%9A%E5%90%91
 // @run-at            document-end
 // @namespace         https://greasyfork.org/zh-CN/users/876245-meriel-varen
 // @license           MIT
@@ -144,17 +145,22 @@
       },
       {
         name: "QQ",
-        urlTest: /c\.pc\.qq\.com.*[?&](?:url|pfurl)=/,
+        urlTest: /c\.pc\.qq\.com.*pfurl=(.*)/,
         resolveAutoJump: function () {
-          const url = new URL(location.href).searchParams.get("url") || new URL(location.href).searchParams.get("pfurl");
-          if (url) {
-            let decoded = decodeURIComponent(url);
-            // 和一位qq 会导致错误多加个/
-            decoded = decoded.replace(/\/+$/, "");
-            location.href = decoded;
-          }
+          location.href = decodeURIComponent(
+            new URL(location.href).searchParams.get("pfurl")
+          );
         },
-      }
+      },
+      {
+        name: "QQ",
+        urlTest: /c\.pc\.qq\.com.*url=(.*)/,
+        resolveAutoJump: function () {
+          location.href = decodeURIComponent(
+            new URL(location.href).searchParams.get("url")
+          );
+        },
+      },
       {
         name: "UrlShare",
         urlTest: /.+\.urlshare\..+\/.*url=(.*)/,
