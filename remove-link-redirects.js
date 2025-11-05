@@ -144,20 +144,17 @@
       },
       {
         name: "QQ",
-        urlTest: /c\.pc\.qq\.com.*pfurl=(.*)/,
+        urlTest: /c\.pc\.qq\.com.*[?&](?:url|pfurl)=/,
         resolveAutoJump: function () {
-          const pfurl = new URL(location.href).searchParams.get("pfurl");
-          if (pfurl) location.href = decodeURI(pfurl);
+          const url = new URL(location.href).searchParams.get("url") || new URL(location.href).searchParams.get("pfurl");
+          if (url) {
+            let decoded = decodeURIComponent(url);
+            // 和一位qq 会导致错误多加个/
+            decoded = decoded.replace(/\/+$/, "");
+            location.href = decoded;
+          }
         },
-      },
-      {
-        name: "QQ",
-        urlTest: /c\.pc\.qq\.com.*url=(.*)/,
-        resolveAutoJump: function () {
-          const url = new URL(location.href).searchParams.get("url");
-          if (url) location.href = decodeURI(url);
-        },
-      },     
+      }
       {
         name: "UrlShare",
         urlTest: /.+\.urlshare\..+\/.*url=(.*)/,
